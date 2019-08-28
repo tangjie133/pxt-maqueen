@@ -151,9 +151,12 @@ namespace maqueen {
 
         basic.pause(50)
 
+        let x = Math.round(d / 42);
+        let y = Math.round(d / 1);
         switch (unit) {
-            case PingUnit.Centimeters: return d / 42;
-            default: return d;
+
+            case PingUnit.Centimeters: return x;
+            default: return y;
         }
     }
 
