@@ -13,7 +13,6 @@ enum PingUnit {
     MicroSeconds
 }
 
-
 //% weight=10 color=#008B00 icon="\uf136" block="maqueen"
 namespace maqueen {
 
