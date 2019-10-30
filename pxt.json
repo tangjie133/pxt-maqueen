@@ -17,7 +17,7 @@
         "shims.d.ts"
     ],
     "testFiles": [
-        "tests.ts"
+        "test.ts"
     ],
     "public": true,
     "installedVersion": "workspace:5a418ea9-a7b7-495d-7b4d-2ba9ced0bb66",
