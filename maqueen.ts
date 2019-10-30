@@ -1,3 +1,17 @@
+/** 
+ * @file pxt-maqueen/maqueen.ts
+ * @brief DFRobot's maqueen makecode library.
+ * @n [Get the module here](https://www.dfrobot.com.cn/goods-1802.html)
+ * @n This is a MakeCode graphical programming education robot.
+ * 
+ * @copyright    [DFRobot](http://www.dfrobot.com), 2016
+ * @copyright    MIT Lesser General Public License
+ * 
+ * @author [email](jie.tang@dfrobot.com)
+ * @version  V0.1
+ * @date  2019-10-08
+*/
+
 let maqueencb: Action
 let maqueenmycb: Action
 let maqueene = "1"
@@ -13,25 +27,23 @@ enum PingUnit {
     MicroSeconds
 }
 
-
-//% weight=10 color=#008B00 icon="\uf136" block="maqueen"
-namespace maqueen {
-
+//% weight=10 color=#008B00 icon="\uf136" block="Maqueen"
+namespace Maqueen {
     export class Packeta {
         public mye: string;
         public myparam: number;
     }
 
-    export enum aMotors {
-        //% blockId="M1" block="M1"
+    export enum Motors {
+        //% blockId="left motor" block="left"
         M1 = 0,
-        //% blockId="M2" block="M2"
+        //% blockId="right motor" block="right"
         M2 = 1,
-        //% blockId="All" block="All"
+        //% blockId="all motor" block="all"
         All = 2
     }
 
-    export enum aServos {
+    export enum Servos {
         //% blockId="S1" block="S1"
         S1 = 0,
         //% blockId="S2" block="S2"
@@ -46,16 +58,16 @@ namespace maqueen {
     }
 
     export enum Patrol {
-        //% blockId="PatrolLeft" block="PatrolLeft"
+        //% blockId="patrolLeft" block="left"
         PatrolLeft = 13,
-        //% blockId="PatrolRight" block="PatrolRight"
+        //% blockId="patrolRight" block="right"
         PatrolRight = 14
     }
 
     export enum LED {
-        //% blockId="LEDLeft" block="LEDLeft"
+        //% blockId="LEDLeft" block="left"
         LEDLeft = 8,
-        //% blockId="LEDRight" block="LEDRight"
+        //% blockId="LEDRight" block="right"
         LEDRight = 12
     }
 
@@ -70,10 +82,12 @@ namespace maqueen {
     function initIR(pin: Pins): void {
         return
     }
+    
     //% advanced=true shim=maqueenIR::onPressEvent
     function onPressEvent(btn: RemoteButton, body: Action): void {
         return
     }
+
     //% advanced=true shim=maqueenIR::getParam
     function getParam(): number {
         return 0
@@ -86,8 +100,6 @@ namespace maqueen {
         initIR(Pins.P16)
         alreadyInit = 1
     }
-
-
 
     //% weight=100
     //% blockGap=50
@@ -111,7 +123,7 @@ namespace maqueen {
     }
 
     //% weight=10
-    //% blockId=IR_read_version block="Get product information"
+    //% blockId=IR_read_version block="get product information"
     export function IR_read_version(): string {
         maqueenInit()
         pins.i2cWriteNumber(0x10, 50, NumberFormat.UInt8BE);
@@ -131,9 +143,9 @@ namespace maqueen {
         onPressEvent(IrPressEvent, maqueencb)
     }
 
-    //% blockId=ultrasonic_sensor block="sensor unit|%unit"
+    //% blockId=ultrasonic_sensor block="ultrasonic|%unit"
     //% weight=95
-    export function sensor(unit: PingUnit, maxCmDistance = 500): number {
+    export function Ultrasonic(unit: PingUnit, maxCmDistance = 500): number {
         // send pulse  basic.pause=sleep control.waitMicros=delay
         pins.setPull(DigitalPin.P1, PinPullMode.PullNone);
         pins.digitalWritePin(DigitalPin.P1, 0);
@@ -143,14 +155,10 @@ namespace maqueen {
         pins.digitalWritePin(DigitalPin.P1, 0);
         pins.setPull(DigitalPin.P2, PinPullMode.PullUp);
 
-
-
         // read pulse
         let d = pins.pulseIn(DigitalPin.P2, PulseValue.High, maxCmDistance * 42);
         console.log("Distance: " + d / 42);
-
         basic.pause(50)
-
         let x = Math.round(d / 42);
         let y = Math.round(d / 1);
         switch (unit) {
@@ -161,11 +169,11 @@ namespace maqueen {
     }
 
     //% weight=90
-    //% blockId=motor_MotorRun block="Motor|%index|dir|%Dir|speed|%speed"
+    //% blockId=motor_MotorRun block="motor|%index|dir|%Dir|speed|%speed"
     //% speed.min=0 speed.max=255
     //% index.fieldEditor="gridpicker" index.fieldOptions.columns=2
     //% direction.fieldEditor="gridpicker" direction.fieldOptions.columns=2
-    export function MotorRun(index: aMotors, direction: Dir, speed: number): void {
+    export function MotorRun(index: Motors, direction: Dir, speed: number): void {
         let buf = pins.createBuffer(3);
         if (index == 0) {
             buf[0] = 0x00;
@@ -190,9 +198,9 @@ namespace maqueen {
     }
 
     //% weight=20
-    //% blockId=motor_motorStop block="Motor stop|%motors"
+    //% blockId=motor_motorStop block="motor stop|%motors"
     //% motors.fieldEditor="gridpicker" motors.fieldOptions.columns=2 
-    export function motorStop(motors: aMotors): void {
+    export function MotorStop(motors: Motors): void {
         let buf = pins.createBuffer(3);
         if (motors == 0) {
             buf[0] = 0x00;
@@ -217,18 +225,11 @@ namespace maqueen {
         }
 
     }
-    /*
-        //% weight=10
-        //% blockId=motor_motorStopAll block="Motor Stop All"
-        export function motorStopAll(): void {
-            let buf = pins.createBuffer(3);
-            
-        }
-    */
+   
     //% weight=20
-    //% blockId=read_Patrol block="Read Patrol|%patrol"
+    //% blockId=read_Patrol block="read patrol|%patrol"
     //% patrol.fieldEditor="gridpicker" patrol.fieldOptions.columns=2 
-    export function readPatrol(patrol: Patrol): number {
+    export function ReadPatrol(patrol: Patrol): number {
         if (patrol == Patrol.PatrolLeft) {
             return pins.digitalReadPin(DigitalPin.P13)
         } else if (patrol == Patrol.PatrolRight) {
@@ -242,7 +243,7 @@ namespace maqueen {
     //% blockId=writeLED block="led|%led|ledswitch|%ledswitch"
     //% led.fieldEditor="gridpicker" led.fieldOptions.columns=2 
     //% ledswitch.fieldEditor="gridpicker" ledswitch.fieldOptions.columns=2
-    export function writeLED(led: LED, ledswitch: LEDswitch): void {
+    export function WriteLED(led: LED, ledswitch: LEDswitch): void {
         if (led == LED.LEDLeft) {
             pins.digitalWritePin(DigitalPin.P8, ledswitch)
         } else if (led == LED.LEDRight) {
@@ -253,10 +254,10 @@ namespace maqueen {
     }
 
     //% weight=90
-    //% blockId=servo_ServoRun block="Servo|%index|angle|%angle"
+    //% blockId=servo_ServoRun block="servo|%index|angle|%angle"
     //% angle.min=0 angle.max=180
     //% index.fieldEditor="gridpicker" index.fieldOptions.columns=2
-    export function ServoRun(index: aServos, angle: number): void {
+    export function ServoRun(index: Servos, angle: number): void {
         let buf = pins.createBuffer(2);
         if (index == 0) {
             buf[0] = 0x14;
