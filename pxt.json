@@ -15,7 +15,8 @@
         "RemoteIR.h",
         "_locales/zh/maqueen-strings.json",
         "shims.d.ts",
-        "test.ts"
+        "test.ts",
+		"README.md"
     ],
     "testFiles": [],
     "public": true,
