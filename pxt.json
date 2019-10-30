@@ -14,11 +14,10 @@
         "ReceiverIR.h",
         "RemoteIR.h",
         "_locales/zh/maqueen-strings.json",
-        "shims.d.ts"
-    ],
-    "testFiles": [
+        "shims.d.ts",
         "test.ts"
     ],
+    "testFiles": [],
     "public": true,
     "installedVersion": "workspace:5a418ea9-a7b7-495d-7b4d-2ba9ced0bb66",
     "preferredEditor": "tsprj"
