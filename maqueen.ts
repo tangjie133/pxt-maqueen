@@ -8,7 +8,7 @@
  * @copyright    MIT Lesser General Public License
  * 
  * @author [email](jie.tang@dfrobot.com)
- * @version  V0.1
+ * @version  V0.1.2
  * @date  2019-10-08
 */
 
@@ -19,6 +19,7 @@ let maqueenparam = 0
 let alreadyInit = 0
 let IrPressEvent = 0
 const MOTER_ADDRESSS = 0x10
+
 
 enum PingUnit {
     //% block="cm"
@@ -145,30 +146,32 @@ namespace Maqueen {
         onPressEvent(IrPressEvent, maqueencb)
     }
 
-    //% blockId=ultrasonic_sensor block="ultrasonic unit|%unit"
+    //% blockId=ultrasonic_sensor block="ultrasonic distance unit |%unit "
     //% weight=95
     export function Ultrasonic(unit: PingUnit, maxCmDistance = 500): number {
-        // send pulse  basic.pause=sleep control.waitMicros=delay
-        pins.setPull(DigitalPin.P1, PinPullMode.PullNone);
+        let d
         pins.digitalWritePin(DigitalPin.P1, 0);
-        control.waitMicros(2);
-        pins.digitalWritePin(DigitalPin.P1, 1);
-        control.waitMicros(10);
-        pins.digitalWritePin(DigitalPin.P1, 0);
-        pins.setPull(DigitalPin.P2, PinPullMode.PullUp);
-
-        // read pulse
-        let d = pins.pulseIn(DigitalPin.P2, PulseValue.High, maxCmDistance * 42);
-        console.log("Distance: " + d / 42);
-        basic.pause(50)
-        let x = Math.round(d / 42);
-        let y = Math.round(d / 1);
-        switch (unit) {
-
-            case PingUnit.Centimeters: return x;
-            default: return y;
+        if (pins.digitalReadPin(DigitalPin.P2) == 0) {
+            pins.digitalWritePin(DigitalPin.P1, 1);
+            pins.digitalWritePin(DigitalPin.P1, 0);
+            d = pins.pulseIn(DigitalPin.P2, PulseValue.High, maxCmDistance * 58);
+        } else {
+            pins.digitalWritePin(DigitalPin.P1, 0);
+            pins.digitalWritePin(DigitalPin.P1, 1);
+            d = pins.pulseIn(DigitalPin.P2, PulseValue.Low, maxCmDistance * 58);
         }
+        let x = d / 39;
+        if (x <= 0 || x > 500) {
+            return 0;
+        }
+        switch (unit) {
+            case PingUnit.Centimeters: return Math.round(x);
+            default: return Math.idiv(d, 2.54);
+        }
+
     }
+
+
 
     //% weight=90
     //% blockId=motor_MotorRun block="motor|%index|dir|%Dir|speed|%speed"
@@ -242,7 +245,7 @@ namespace Maqueen {
     }
 
     //% weight=20
-    //% blockId=writeLED block="led|%led|ledswitch|%ledswitch"
+    //% blockId=writeLED block="led|%led|LEDswitch|%ledswitch"
     //% led.fieldEditor="gridpicker" led.fieldOptions.columns=2 
     //% ledswitch.fieldEditor="gridpicker" ledswitch.fieldOptions.columns=2
     export function WriteLED(led: LED, ledswitch: LEDswitch): void {
